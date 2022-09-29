@@ -20,7 +20,8 @@
 /*----------------------------------------------------------------------*/
 /* data.h   Header file for time-step simulation program                */
 /*----------------------------------------------------------------------*/
-
+#ifndef DATA_H
+#define DATA_H
 static char data_rcsid[] = "$Id: data.h,v 1.14 1993/12/02 16:13:56 pgaughan Exp $";
 
 #define HOLDER 1000000
@@ -168,16 +169,10 @@ typedef struct intra_list {
   int security_level;
 } intra_list;
 
-int DEBUG;
+extern int DEBUG;
 
 typedef struct rgb {
   int red[18], green[18], blue[18];
 } rgb;
 
-
-
-
-
-
-
-
+#endif

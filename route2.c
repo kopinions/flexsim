@@ -126,7 +126,7 @@ route_to_node(nd, tkn) {
   return -1;
 }
 
-int s[16],d[16],n[16];
+static int s[16],d[16],n[16];
 int j, k, sign, gamma, v;
 int can_wait, min_c, vl_min;
 

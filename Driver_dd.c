@@ -10,7 +10,7 @@
 int sim_time;
 int DDTEST;
 
-
+int DEBUG;
 main(argc, argv)
 int	argc;
 char	*argv[];

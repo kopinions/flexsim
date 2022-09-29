@@ -16,10 +16,44 @@
 #    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 #CXX = gcc  -DOLD=0 -DNO_X -pg
-CXX = gcc  -DOLD=0 -DNO_X -DHASH -DPLINK -DSET_PORT 
+CFLAGS=-c -g -std=c89 -DOLD=0 -DNO_X -DHASH -DPLINK -DSET_PORT
+ifeq ($(OS),Windows_NT)
+    CCFLAGS += -D WIN32
+    ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
+        CCFLAGS += -D AMD64
+    else
+        ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
+            CCFLAGS += -D AMD64
+        endif
+        ifeq ($(PROCESSOR_ARCHITECTURE),x86)
+            CCFLAGS += -D IA32
+        endif
+    endif
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+    	CXX = gcc
+        CCFLAGS += -D LINUX
+    endif
+    ifeq ($(UNAME_S),Darwin)
+    	CXX = gcc-12
+        CCFLAGS += -D OSX
+        CFLAGS+=-I/usr/local/Cellar/gcc/12.2.0/include -L/usr/local/Cellar/gcc/12.2.0/lib
+    endif
+    UNAME_P := $(shell uname -p)
+    ifeq ($(UNAME_P),x86_64)
+        CCFLAGS += -D AMD64
+    endif
+    ifneq ($(filter %86,$(UNAME_P)),)
+        CCFLAGS += -D IA32
+    endif
+    ifneq ($(filter arm%,$(UNAME_P)),)
+        CCFLAGS += -D ARM
+    endif
+endif
+
 #CXX = gcc -DOLD=0 
 #CFLAGS= -c -g -I/usr/usc/X11/include
-CFLAGS=-c -g
  
 #AFLAGS= -S -g -I/usr/usc/X11/include
 AFLAGS = -S -g

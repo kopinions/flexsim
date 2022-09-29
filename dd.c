@@ -8,9 +8,13 @@
 *	- Routines for Detecting Deadlocks Involving Groups of Cycles 
 */
 
+#ifdef __APPLE__
+#include	<sys/malloc.h>
+#else
+#include <malloc.h>
+#endif
 
-#include	<malloc.h>
-#include	"dat2.h"	
+#include	"dat2.h"
 #include	"dd.h"
 
 
