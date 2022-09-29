@@ -1,0 +1,9 @@
+gcc  -DOLD=0 -DNO_X -DHASH -DPLINK -DSET_PORT  -c -g route2.c
+gcc  -DOLD=0 -DNO_X -DHASH -DPLINK -DSET_PORT  -c -g mapper.c
+gcc  -DOLD=0 -DNO_X -DHASH -DPLINK -DSET_PORT  -c -g net2.c
+gcc  -DOLD=0 -DNO_X -DHASH -DPLINK -DSET_PORT  -c -g ut2.c
+gcc  -DOLD=0 -DNO_X -DHASH -DPLINK -DSET_PORT  -c -g syntraf.c
+gcc  -DOLD=0 -DNO_X -DHASH -DPLINK -DSET_PORT  -c -g tracetraf.c
+gcc  -DOLD=0 -DNO_X -DHASH -DPLINK -DSET_PORT  -c -g main2.c
+gcc  -DOLD=0 -DNO_X -DHASH -DPLINK -DSET_PORT  -c -g dd.c
+gcc  -DOLD=0 -DNO_X -DHASH -DPLINK -DSET_PORT  route2.o mapper.o net2.o ut2.o syntraf.o tracetraf.o main2.o dd.o -lm -o rst

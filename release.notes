@@ -1,0 +1,165 @@
+=========================
+Version 1.2 Release Notes
+=========================
+
+Support for configuring injection and delivery channels
+-------------------------------------------------------
+
+This version includes improved support for configuring the physical and
+virtual injection and delivery channels.
+
+Parameters:
+
+PLINK=%d		- Number of physical links (internode) (default = 1)
+
+PLINKINJ=%d		- Number of injection physical links (default = 1)
+			- Value to the number of PLINK if PLINK is re-defined in the command line
+
+PLINKDEL=%d		- Number of delivery physical links (default = 1)
+			- Value to the number of PLINK if PLINK is re-defined in the command line
+			- Parameter was previously called "PLINKCONS"
+
+USEINJVC=%d		- # of VCs per physical consumption links (default = 2)
+			- Set to the number of VIRTS if VIRTS is defined in the command line
+			- Set to the number of USEVIRTS if USEVIRTS is defined in the command line
+			- Parameter was previously called "INJPORT"
+
+USEDELVC=%d		- # of VCs per physical delivery links (default = 2)
+			- Set to the number of VIRTS if VIRTS is defined in the command line
+			- Set to the number of USEVIRTS if USEVIRTS is defined in the command line
+			- Parameter was previously called "CONSPORT"
+
+
+Other Modifications to Parameters
+---------------------------------
+
+MISROUTES=%d		- Number of misroutes allowed for Disha and other non-minimal algorithms (default = 0)			
+			- Parameter was previously called "M"			
+			- Default was previously 3
+
+
+Other Modifications to Default Values
+-------------------------------------
+
+WAITTIME		- Used for Disha Timeout value --- Default value changed from 8 to 25
+
+HALF			- Used to turn OFF/ON Half-Duplex --- Default value changed from ON to OFF (Default = Full Duplex)
+
+
+Bug Fixes
+---------
+
+- Message lengths were incorrectly "doubled" in size for Full-Duplex mode (now fixed).
+- Simulation parameters not properly written to output file when std out was redirected (now fixed)
+- Load Rate incorrectly calculated and printed out (using hardcoded values) at startup (now removed).
+- Throughput calculated using sim. duration including the 10k cycles of results ignored (temporarily patched --- need to be fixed).
+
+
+
+=========================
+Version 1.1 Release Notes
+=========================
+
+Hybrid Traffic
+--------------
+
+This capability supports generating a combination of long and short messages for 
+synthetic traffic generation. For experiments which use hybrid traffic (a combination 
+of long and short messages), use the following parameters:
+
+HYBRID=1 	- specifies turning ON the hybrid traffic generation (OFF by default)
+
+MSGL=n		- specifies the size of small messages (32 flits by default)
+
+LMSGL=n		- specifies the size (in flits) of long messages (512 flits by default)
+
+LMSGPCT=n 	- specifies the percent of the total number of messages which are log messages (5% by default)
+
+
+Statistics for Hybrid Traffic
+-----------------------------
+
+Operation (and statistics generation) in non-hybrid traffic mode remains the same as earlier.
+Here's how to read the statistics for simulations with hybrid traffic.
+
+Example:
+
+rsim PROTO=Y DIST=0 SIZE=44 VIRTS=4 USEVIRTS=3 DUR=2000 HALF=0 PER=160 MSGL=16 HYBRID=1 LMSGL=64 LMSGPCT=10
+
+(This command initiates a hybrid traffic simulation for Disha using 3 VCs for short messages of length 16 flits
+and long messages of length 64 flits with approximately 10% of the overall number of messages being long messages).
+
+
+How to Interpret Intermediate Statistics (Example):
+
+       Time  Ave Msg Lat   Ave Msg SU   Ave Setups  TotDone  NewDone  Inject   NewIn  Disha-Rec  DB Util    Tok. Wait
+=====   500        99.51        25.35        56.47      496      496     763     763         24        0
+-----   500       315.22                                 27       27
+
+The line starting with '=====' indicates Average Message Latency (column 2), Total Number of Messages completed
+thus far (column 5), and the Messages completed during the last 500 clock cycles (column 6) for SHORT MESSAGES ONLY. 
+ALL other statistics on this line APPLY TO BOTH LONG AND SHORT messages. In this line, the column entitled 'Disha-Rec' 
+(column 9) indicates the number of messages (suspected of being in a deadlock) which were delivered to their destinations 
+using the deadlock buffer ("deadlock recovery"). The 'DB util' and 'Tok Wait' columns only apply to other Disha routing 
+algorithms which are not applicable to your HW.
+
+The line starting with '-----' indicates Average Message Latency (column 2), Total Number of Messages completed
+thus far (column 5), and the Messages completed during the last 500 clock cycles (column 6) for LONG MESSAGES ONLY. 
+
+
+How to Interpret Final Statistics (Example):
+
+Simulation Time:           2000
+Total Done (short):        1095					< Indicates the number of message completed 
+Total Done (long):         138					< for each type of message and for all messages
+Total Done (all):          1233					< 
+Throughput:                0.102937				< Indicates Throughut (calculation includes all messages)
+Average message latency (short):  148.600006			< Indicates Latency 
+Average message latency (long):   388.079712			< for each type of message and for all messages
+Average message latency (all):    175.403076			< 
+Latency std:                104.141190
+Average message setup:     68.275528
+Setup std:                  106.763092
+Average message queue time: 0.000000
+Queue time std:             0.000000
+Average concurrent circs:  66.796104
+Average concurrent setups: 559.307861
+Average path length:       11.788493
+Average misroutes taken:   1.002431
+Total flits delivered:     52713
+Total setups:              1234
+Total messages done:       1095
+
+Percentage of retry failures 0.000000
+Mean time to inform src of dynamic fault: 0.000000
+Control flit collision percentage: 0.001374
+DISHA - Number of Token Captured: 90				< Deadlock Recovery actions 
+
+
+Use of VCs in Disha (and use of VCs which are not a power of 2)
+---------------------------------------------------------------
+
+Disha based routing algorithms have been fixed to support 
+improved specification of VCs (declared vs. used). This also
+applies to other routing functions when using a number of 
+VCs which is not equal to a power of 2.
+
+For Disha, you are required to reserve the first virtual channel 
+to be used as the deadlock buffer lane, and therefore, you need 
+to declare both the number of VCs for which memory is allocated by 
+the simulator (using the parameter VIRTS) as well as the actual number 
+of VCs to be used for normal routing operation (using the parameter 
+USEVIRTS).  Note that FlexSim also requires n to be a power of 2 for 
+the parameter 'VIRTS=n'. So here are examples of command line parameters 
+for Disha and Duato when using 3 and 4 VCs.
+
+Disha using 3 VCs: rsim PROTO=Y ... VIRTS=4 USEVIRTS=3 ...  
+Disha using 4 VCs: rsim PROTO=Y ... VIRTS=8 USEVIRTS=4 ...
+
+Duato using 3 VCs: rsim PROTO=D ... VIRTS=4 USEVIRTS=3 ...  
+Duato using 4 VCs: rsim PROTO=D ... VIRTS=4 ... 
+
+You do not need to specify the 'USEVIRTS' parameter for other routing
+algorithms such as Duato (it is set to the value of the 'VIRTS' parameter 
+by default).
+
