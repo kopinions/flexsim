@@ -333,10 +333,9 @@ random_seed (seed)
      long seed;
 {
   struct timeval tp;
-  struct timezone tz;
 
   if (seed == 0L) {
-    gettimeofday (&tp, &tz);
+    gettimeofday (&tp, NULL);
     seed = tp.tv_sec * 1000000 + tp.tv_usec;
   }
   printf ("seed = %d\n", seed);
